@@ -1,19 +1,35 @@
 import React, { Component } from 'react';
 import { Search } from './search';
 import { token } from '../secret';
+import _ from 'lodash';
+import Nodes from './nodes';
+
 
 class Main extends Component {
   constructor(props){
     super(props);
 
+    // debugger
     this.state = {
       search: '',
       errors: '',
+      result: {},
+      width: window.innerWidth,
+      height: window.innerHeight,
     };
+
+    // this.res = {
+    //   name: 'somename',
+    //   images: ['img1', 'img2', 'img3'],
+    //   id: 'dgzhslisubyfdgp9ae',
+    //   genres: ['techno', 'idm', 'electronic'],
+    //   href: 'https://www.someaddress.com'
+    // };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
+
 
   handleChange(e){
     e.preventDefault();
@@ -33,13 +49,15 @@ class Main extends Component {
     fetch(request)
       .then( res => {
         if (res.status >= 400) {
-          debugger
           const message = `Status: ${res.status}, Error: ${res.statusText}`;
           this.setState({ errors: message });
         }
         return res.json();
       })
       .then(data => {
+        const { name, images, id, genres, href } = data.artists.items[0];
+        const artist = { name, images, id, genres, href };
+        this.setState({ result: artist });
       });
       e.preventDefault();
   }
@@ -47,11 +65,38 @@ class Main extends Component {
   showErrors(){
     return (
       this.state.errors === '' ? '' : <div>{this.state.errors}</div>
-
-    )
+    );
+  }
+  show(){
+    return (
+      _.isEmpty(this.state.result) ? '' : <ul><li>{this.state.result.name}</li></ul>
+    );
   }
 
   render(){
+
+    const nodeCount = 100;
+    const nodes = [];
+    for (let i = 0; i < nodeCount; i++) {
+      nodes.push({
+      	r: (Math.random() * 5 ) + 2,
+        x: 0,
+        y: 0
+      });
+    }
+    const links = [];
+      for (let i = 0; i < nodeCount; i++) {
+        let target = 0;
+        do {
+          target = Math.floor(Math.random() * nodeCount);
+        } while(target == i) {
+          links.push({
+            source: i,
+            target
+          });
+        }
+      }
+
     return (
       <div>
         <h1>Main</h1>
@@ -61,10 +106,25 @@ class Main extends Component {
           searchState={this.state.search}
           />
         {this.showErrors()}
+        {this.show()}
+        <Nodes
+          nodes={nodes}
+          links={links}
+          width={this.state.width}
+          height={this.state.height}
+          forceStrength={-10}
+          linkDistance={30}
+          />
       </div>
     );
   }
 
 }
+
+// Nodes.defaultProps = {
+//   width: 300,
+//   height: 300,
+//   forceStrength: -10
+// };
 
 export default Main;
