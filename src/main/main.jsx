@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Search } from './search';
-import { token } from '../secret';
+import { getNewToken } from '../secret';
 import _ from 'lodash';
 import Nodes from './nodes';
 
@@ -28,6 +28,7 @@ class Main extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.reqTok = this.reqTok.bind(this);
   }
 
 
@@ -36,8 +37,15 @@ class Main extends Component {
     this.setState({ search: e.target.value });
   }
 
-  handleSubmit(e){
+  async reqTok(){
+    const result = await getNewToken();
+    return result;
+  }
+
+  async handleSubmit(e){
     const { search } = this.state;
+    let token = await this.reqTok();
+    debugger
     const request = new Request(`https://api.spotify.com/v1/search?q=${search}&type=Artist`, {
       method: 'GET',
       headers: new Headers({
@@ -46,6 +54,7 @@ class Main extends Component {
         'Authorization': 'Bearer ' + token
       })
     });
+    debugger
     fetch(request)
       .then( res => {
         if (res.status >= 400) {
@@ -55,6 +64,7 @@ class Main extends Component {
         return res.json();
       })
       .then(data => {
+
         const { name, images, id, genres, href } = data.artists.items[0];
         const artist = { name, images, id, genres, href };
         this.setState({ result: artist });
@@ -74,7 +84,7 @@ class Main extends Component {
   }
 
   render(){
-
+    debugger
     const nodeCount = 100;
     const nodes = [];
     for (let i = 0; i < nodeCount; i++) {
@@ -89,7 +99,7 @@ class Main extends Component {
         let target = 0;
         do {
           target = Math.floor(Math.random() * nodeCount);
-        } while(target == i) {
+        } while(target === i) {
           links.push({
             source: i,
             target
