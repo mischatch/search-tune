@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { Search } from './search';
 import { getNewToken } from '../secret';
 import _ from 'lodash';
-import Nodes from './nodes';
+import Node from './node';
+import Graph from './graph';
+import { enterNode, updateNode, enterLink, updateLink,
+          updateGraph, width, height, force } from './d3Util';
 
 
 class Main extends Component {
@@ -13,7 +16,7 @@ class Main extends Component {
     this.state = {
       search: '',
       errors: '',
-      result: {},
+      result: [],
       width: window.innerWidth,
       height: window.innerHeight,
     };
@@ -31,6 +34,10 @@ class Main extends Component {
     this.reqTok = this.reqTok.bind(this);
   }
 
+  // componentDidMount() {
+  //   this.updateData();
+  // }
+
 
   handleChange(e){
     e.preventDefault();
@@ -45,7 +52,6 @@ class Main extends Component {
   async handleSubmit(e){
     const { search } = this.state;
     let token = await this.reqTok();
-    debugger
     const request = new Request(`https://api.spotify.com/v1/search?q=${search}&type=Artist`, {
       method: 'GET',
       headers: new Headers({
@@ -54,7 +60,6 @@ class Main extends Component {
         'Authorization': 'Bearer ' + token
       })
     });
-    debugger
     fetch(request)
       .then( res => {
         if (res.status >= 400) {
@@ -65,9 +70,11 @@ class Main extends Component {
       })
       .then(data => {
 
+        debugger
         const { name, images, id, genres, href } = data.artists.items[0];
-        const artist = { name, images, id, genres, href };
-        this.setState({ result: artist });
+        const x = 0, y = 0, r = 10;
+        const artist = { name, images, id, genres, href, x, y, r };
+        this.setState({ result: this.state.result.concat(artist) });
       });
       e.preventDefault();
   }
@@ -77,21 +84,17 @@ class Main extends Component {
       this.state.errors === '' ? '' : <div>{this.state.errors}</div>
     );
   }
-  show(){
-    return (
-      _.isEmpty(this.state.result) ? '' : <ul><li>{this.state.result.name}</li></ul>
-    );
-  }
+
 
   render(){
     debugger
-    const nodeCount = 100;
+    const nodeCount = 2 ; //this.state.result.length;
     const nodes = [];
     for (let i = 0; i < nodeCount; i++) {
       nodes.push({
-      	r: (Math.random() * 5 ) + 2,
-        x: 0,
-        y: 0
+      	r: 25,
+        x: Math.random() * (this.state.width),
+        y: Math.random() * (this.state.height)
       });
     }
     const links = [];
@@ -99,7 +102,7 @@ class Main extends Component {
         let target = 0;
         do {
           target = Math.floor(Math.random() * nodeCount);
-        } while(target === i) {
+        } while (target === i) {
           links.push({
             source: i,
             target
@@ -116,20 +119,16 @@ class Main extends Component {
           searchState={this.state.search}
           />
         {this.showErrors()}
-        {this.show()}
-        <Nodes
-          nodes={nodes}
-          links={links}
-          width={this.state.width}
-          height={this.state.height}
-          forceStrength={-10}
-          linkDistance={30}
-          />
+        <div>
+
+          <Graph nodes={this.state.nodes} links={this.state.links} />
+        </div>
       </div>
     );
   }
 
 }
+// links={links}
 
 // Nodes.defaultProps = {
 //   width: 300,
