@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import * as d3 from "d3";
-import { enterNode, updateNode, enterLink, updateLink,
-          updateGraph, width, height, force } from './d3Util';
+import { enterNode, updateNode } from './d3Util';
 
 class Node extends Component {
   componentDidMount() {

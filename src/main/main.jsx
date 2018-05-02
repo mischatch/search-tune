@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import { Search } from './search';
 import { getNewToken } from '../secret';
-import _ from 'lodash';
-import Node from './node';
+// import _ from 'lodash';
+// import Node from './node';
 import Graph from './graph';
-import { enterNode, updateNode, enterLink, updateLink,
-          updateGraph, width, height, force } from './d3Util';
+// import { enterNode, updateNode } from './d3Util';
 
 
 class Main extends Component {
@@ -16,7 +15,11 @@ class Main extends Component {
     this.state = {
       search: '',
       errors: '',
-      result: [],
+      result: [ {
+        name: '', images: [], id: '', genres: [], href: '',x: 0, y: 0, r: 10
+      },{
+        name: '', images: [], id: '', genres: [], href: '',x: 0, y: 0, r: 10
+      } ],
       width: window.innerWidth,
       height: window.innerHeight,
     };
@@ -32,6 +35,7 @@ class Main extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.reqTok = this.reqTok.bind(this);
+    this.renderNodes = this.renderNodes.bind(this);
   }
 
   // componentDidMount() {
@@ -45,6 +49,7 @@ class Main extends Component {
   }
 
   async reqTok(){
+    debugger
     const result = await getNewToken();
     return result;
   }
@@ -57,9 +62,11 @@ class Main extends Component {
       headers: new Headers({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + token
-      })
+        'Authorization': 'Bearer ' + token,
+      }),
+
     });
+    debugger
     fetch(request)
       .then( res => {
         if (res.status >= 400) {
@@ -85,30 +92,44 @@ class Main extends Component {
     );
   }
 
+  renderNodes(){
+    if (this.state.result.length >= 2){
+
+      const nodeCount = this.state.result.length;
+
+
+      const links = [];
+        for (let i = 0; i < nodeCount; i++) {
+          let target = 0;
+          do {
+            target = Math.floor(Math.random() * nodeCount);
+          } while (target === i) {
+            links.push({
+              source: i,
+              target
+            });
+          }
+        }
+      debugger
+      return (
+        <Graph nodes={this.state.result} links={links} />
+      );
+    }
+  }
+
 
   render(){
     debugger
-    const nodeCount = 2 ; //this.state.result.length;
-    const nodes = [];
-    for (let i = 0; i < nodeCount; i++) {
-      nodes.push({
-      	r: 25,
-        x: Math.random() * (this.state.width),
-        y: Math.random() * (this.state.height)
-      });
-    }
-    const links = [];
-      for (let i = 0; i < nodeCount; i++) {
-        let target = 0;
-        do {
-          target = Math.floor(Math.random() * nodeCount);
-        } while (target === i) {
-          links.push({
-            source: i,
-            target
-          });
-        }
-      }
+    const nodeCount = this.state.result.length;
+    // const nodes = [];
+    // for (let i = 0; i < nodeCount; i++) {
+    //   nodes.push({
+    //   	r: 25,
+    //     x: Math.random() * (this.state.width),
+    //     y: Math.random() * (this.state.height)
+    //   });
+    // }
+
 
     return (
       <div>
@@ -120,8 +141,8 @@ class Main extends Component {
           />
         {this.showErrors()}
         <div>
+          {this.renderNodes()}
 
-          <Graph nodes={this.state.nodes} links={this.state.links} />
         </div>
       </div>
     );

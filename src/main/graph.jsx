@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import * as d3 from "d3";
 import Node from './node';
 import Link from './link';
-import { enterNode, updateNode, enterLink, updateLink,
-          updateGraph, width, height, force } from './d3Util';
+import { updateGraph, width, height, force } from './d3Util';
 import _ from 'underscore';
 
 
@@ -20,6 +19,7 @@ class Graph extends Component {
   }
 
   componentDidUpdate() {
+    debugger
     // we should actually clone the nodes and links
     // since we're not supposed to directly mutate
     // props passed in from parent, and d3's force function
