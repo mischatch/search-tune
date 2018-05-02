@@ -16,9 +16,9 @@ class Main extends Component {
       search: '',
       errors: '',
       result: [ {
-        name: '', images: [], id: '', genres: [], href: '',x: 0, y: 0, r: 10
+        name: '', images: [], key: '123', genres: [], href: '',x: 0, y: 0, r: 10
       },{
-        name: '', images: [], id: '', genres: [], href: '',x: 0, y: 0, r: 10
+        name: '', images: [], key: '234', genres: [], href: '',x: 0, y: 0, r: 10
       } ],
       width: window.innerWidth,
       height: window.innerHeight,
@@ -80,7 +80,7 @@ class Main extends Component {
         debugger
         const { name, images, id, genres, href } = data.artists.items[0];
         const x = 0, y = 0, r = 10;
-        const artist = { name, images, id, genres, href, x, y, r };
+        const artist = { name, images, key: id, genres, href, x, y, r };
         this.setState({ result: this.state.result.concat(artist) });
       });
       e.preventDefault();
@@ -101,14 +101,8 @@ class Main extends Component {
       const links = [];
         for (let i = 0; i < nodeCount; i++) {
           let target = 0;
-          do {
-            target = Math.floor(Math.random() * nodeCount);
-          } while (target === i) {
-            links.push({
-              source: i,
-              target
-            });
-          }
+          target = Math.floor(Math.random() * nodeCount);
+          links.push({ source: i, target });
         }
       debugger
       return (

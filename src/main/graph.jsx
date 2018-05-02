@@ -34,11 +34,12 @@ class Graph extends Component {
 
   render() {
     // use React to draw all the nodes, d3 calculates the x and y
-    var nodes = _.map(this.props.nodes, (node) => {
-      return (<Node data={node} key={node.key} />);
+    debugger
+    var nodes = _.map(this.props.nodes, (node, i) => {
+      return (<Node data={node} key={node.key} key={i} />);
     });
-    var links = _.map(this.props.links, (link) => {
-      return (<Link key={link.key} data={link} />);
+    var links = _.map(this.props.links, (link, i) => {
+      return (<Link key={link.key} data={link} key={i} />);
     });
 
     return (

@@ -9,8 +9,8 @@ export const force = d3.forceSimulation()
 
 export const enterNode = (selection) => {
   selection.select('circle')
-    .attr("r", (d) => d.size)
-    .call(force.drag);
+    .attr("r", (d) => d.size);
+    // .call(force.drag);
 
   selection.select('text')
     .attr("x", (d) => d.size + 5)
