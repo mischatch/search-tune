@@ -16,9 +16,9 @@ class Main extends Component {
       search: '',
       errors: '',
       result: [ {
-        name: '', images: [], key: '123', genres: [], href: '',x: 0, y: 0, r: 10
-      },{
-        name: '', images: [], key: '234', genres: [], href: '',x: 0, y: 0, r: 10
+        name: '', images: [], key: 'obj1', genres: [], href: '',x: 10, y: 10, r: 50
+      }, {
+        name: '', images: [], key: 'obj2', genres: [], href: '',x: 20, y: 20, r: 50
       } ],
       width: window.innerWidth,
       height: window.innerHeight,
@@ -66,7 +66,7 @@ class Main extends Component {
       }),
 
     });
-    debugger
+    // debugger
     fetch(request)
       .then( res => {
         if (res.status >= 400) {
@@ -77,12 +77,13 @@ class Main extends Component {
       })
       .then(data => {
 
-        debugger
+        // debugger
         const { name, images, id, genres, href } = data.artists.items[0];
         const x = 0, y = 0, r = 10;
         const artist = { name, images, key: id, genres, href, x, y, r };
         this.setState({ result: this.state.result.concat(artist) });
       });
+      this.renderNodes();
       e.preventDefault();
   }
 
@@ -104,7 +105,7 @@ class Main extends Component {
           target = Math.floor(Math.random() * nodeCount);
           links.push({ source: i, target });
         }
-      debugger
+      // debugger
       return (
         <Graph nodes={this.state.result} links={links} />
       );
@@ -113,7 +114,7 @@ class Main extends Component {
 
 
   render(){
-    debugger
+    // debugger
     const nodeCount = this.state.result.length;
     // const nodes = [];
     // for (let i = 0; i < nodeCount; i++) {

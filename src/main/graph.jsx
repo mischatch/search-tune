@@ -34,7 +34,7 @@ class Graph extends Component {
 
   render() {
     // use React to draw all the nodes, d3 calculates the x and y
-    debugger
+    // debugger
     var nodes = _.map(this.props.nodes, (node, i) => {
       return (<Node data={node} key={node.key} key={i} />);
     });
