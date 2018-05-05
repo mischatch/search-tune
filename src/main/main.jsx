@@ -16,12 +16,24 @@ class Main extends Component {
       search: '',
       errors: '',
       result: [ {
-        name: '', images: [], key: 'obj1', genres: [], href: '',x: 10, y: 10, r: 50
+        name: '', images: [], key: 'obj1', genres: [], href: '',x: 10, y: 10, r: 50, size: 20
       }, {
-        name: '', images: [], key: 'obj2', genres: [], href: '',x: 20, y: 20, r: 50
+        name: '', images: [], key: 'obj2', genres: [], href: '',x: 20, y: 20, r: 50, size: 20
       } ],
       width: window.innerWidth,
       height: window.innerHeight,
+      nodes:
+        [
+          {"name": "fruit", "id": 1},
+          {"name": "apple", "id": 2},
+          {"name": "orange", "id": 3},
+          {"name": "banana", "id": 4}
+        ],
+      links:
+        [
+          {"source": 1, "target": 2},
+          {"source": 1, "target": 3}
+        ]
     };
 
     // this.res = {
@@ -107,7 +119,7 @@ class Main extends Component {
         }
       // debugger
       return (
-        <Graph nodes={this.state.result} links={links} />
+        <Graph nodes={this.state.nodes} links={this.state.links} />
       );
     }
   }

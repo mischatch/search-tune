@@ -15,11 +15,15 @@ class Node extends Component {
       .call(updateNode);
   }
 
+  handle(e){
+      console.log(this.props.data.id + ' been clicked');
+  }
+
   render() {
     return (
       <g className='node'>
-        <circle/>
-        <text>{this.props.data.key}</text>
+        <circle onClick={this.handle.bind(this)}/>
+        <text>{this.props.data.name}</text>
       </g>
     );
   }
