@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import { Search } from './search';
 import { getNewToken } from '../secret';
-// import _ from 'lodash';
-// import Node from './node';
 import Graph from './graph';
-// import { enterNode, updateNode } from './d3Util';
 
 
 class Main extends Component {
@@ -15,45 +12,31 @@ class Main extends Component {
     this.state = {
       search: '',
       errors: '',
-      result: [ {
-        name: '', images: [], key: 'obj1', genres: [], href: '',x: 10, y: 10, r: 50, size: 20
-      }, {
-        name: '', images: [], key: 'obj2', genres: [], href: '',x: 20, y: 20, r: 50, size: 20
-      } ],
+      result: [
+                {"name": "name1", "id": 1, images: [], genres: [], href: '' },
+                {"name": "name2", "id": 2, images: [], genres: [], href: '' }
+              ],
       width: window.innerWidth,
       height: window.innerHeight,
       nodes:
         [
           {"name": "fruit", "id": 1},
-          // {"name": "apple", "id": 2},
-          // {"name": "orange", "id": 3},
-          // {"name": "banana", "id": 4}
+          {"name": "apple", "id": 2},
+          {"name": "orange", "id": 3},
+          {"name": "banana", "id": 4},
         ],
       links:
         [
           // {"source": 1, "target": 2},
-          // {"source": 1, "target": 3}
+          // {"source": 1, "target": 3},
         ]
     };
-
-    // this.res = {
-    //   name: 'somename',
-    //   images: ['img1', 'img2', 'img3'],
-    //   id: 'dgzhslisubyfdgp9ae',
-    //   genres: ['techno', 'idm', 'electronic'],
-    //   href: 'https://www.someaddress.com'
-    // };
 
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.reqTok = this.reqTok.bind(this);
-    this.renderNodes = this.renderNodes.bind(this);
+    this.addOne = this.addOne.bind(this);
   }
-
-  // componentDidMount() {
-  //   this.updateData();
-  // }
-
 
   handleChange(e){
     e.preventDefault();
@@ -61,14 +44,16 @@ class Main extends Component {
   }
 
   async reqTok(){
-    debugger
     const result = await getNewToken();
+    debugger
     return result;
   }
 
   async handleSubmit(e){
+    e.persist()
     const { search } = this.state;
-    let token = await this.reqTok();
+    let token = await getNewToken();
+    debugger
     const request = new Request(`https://api.spotify.com/v1/search?q=${search}&type=Artist`, {
       method: 'GET',
       headers: new Headers({
@@ -76,11 +61,11 @@ class Main extends Component {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer ' + token,
       }),
-
     });
-    // debugger
+    debugger
     fetch(request)
       .then( res => {
+        debugger
         if (res.status >= 400) {
           const message = `Status: ${res.status}, Error: ${res.statusText}`;
           this.setState({ errors: message });
@@ -88,15 +73,15 @@ class Main extends Component {
         return res.json();
       })
       .then(data => {
-
-        // debugger
+        console.log(data);
+        debugger
         const { name, images, id, genres, href } = data.artists.items[0];
-        const x = 0, y = 0, r = 10;
-        const artist = { name, images, key: id, genres, href, x, y, r };
+        const artist = { name, id, images, genres, href };
         this.setState({ result: this.state.result.concat(artist) });
       });
-      this.renderNodes();
       e.preventDefault();
+      e.persist();
+
   }
 
   showErrors(){
@@ -105,42 +90,19 @@ class Main extends Component {
     );
   }
 
-  renderNodes(){
-    if (this.state.result.length >= 2){
-
-      const nodeCount = this.state.result.length;
-
-
-      const links = [];
-        for (let i = 0; i < nodeCount; i++) {
-          let target = 0;
-          target = Math.floor(Math.random() * nodeCount);
-          links.push({ source: i, target });
-        }
-      // debugger
-      return (
-        <Graph nodes={this.state.nodes} links={this.state.links} />
-      );
-    }
+  addOne(){
+    let last = this.state.result[this.state.result.length - 1].id;
+    let obj = {"name": `name${last + 1}`, "id": last + 1, images: [], genres: [], href: '' };
+    this.setState({result: this.state.result.concat(obj)});
   }
 
 
+
   render(){
-    // debugger
-    const nodeCount = this.state.result.length;
-    // const nodes = [];
-    // for (let i = 0; i < nodeCount; i++) {
-    //   nodes.push({
-    //   	r: 25,
-    //     x: Math.random() * (this.state.width),
-    //     y: Math.random() * (this.state.height)
-    //   });
-    // }
-
-
     return (
       <div>
         <h1>Main</h1>
+        <button onClick={this.addOne}>one more</button>
         <Search
           handleChange={this.handleChange}
           submit={this.handleSubmit}
@@ -148,20 +110,12 @@ class Main extends Component {
           />
         {this.showErrors()}
         <div>
-          {this.renderNodes()}
+            <Graph nodes={this.state.result} links={this.state.links} />
 
         </div>
       </div>
     );
   }
-
 }
-// links={links}
-
-// Nodes.defaultProps = {
-//   width: 300,
-//   height: 300,
-//   forceStrength: -10
-// };
 
 export default Main;
