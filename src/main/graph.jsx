@@ -75,13 +75,10 @@ class Graph extends Component {
     var nodes = _.map(this.props.nodes, (node, i) => {
       return (<Node data={node} key={i} />);
     });
-    // var links = _.map(this.props.links, (link, i) => {
-    //   return (<Link data={link} key={i} />);
-    // });
+    var links = _.map(this.props.links, (link, i) => {
+      return (<Link data={link} key={i} />);
+    });
 
-    // <g>
-    //   {links}
-    // </g>
 
     return (
       <svg
@@ -90,6 +87,9 @@ class Graph extends Component {
         style={{"border": "2px solid black", "margin": "20px"}}>
         <g>
           {nodes}
+        </g>
+        <g>
+          {links}
         </g>
       </svg>
     );
