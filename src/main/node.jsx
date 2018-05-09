@@ -5,6 +5,7 @@ import { enterNode, updateNode } from './d3Util';
 
 class Node extends Component {
   componentDidMount() {
+    debugger
     this.d3Node = d3.select(ReactDOM.findDOMNode(this))
       .datum(this.props.data)
       .call(enterNode);
@@ -14,6 +15,7 @@ class Node extends Component {
     this.d3Node.datum(this.props.data)
       .call(updateNode);
   }
+
 
   handle(e){
       console.log(this.props.data.id + ' been clicked');

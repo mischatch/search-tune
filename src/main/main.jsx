@@ -44,15 +44,20 @@ class Main extends Component {
   }
 
   async reqTok(){
-    const result = await getNewToken();
-    debugger
-    return result;
+    try {
+      const result = await getNewToken();
+      debugger
+      return result;
+    }
+    catch(err){
+      console.log(err);
+    }
   }
 
-  async handleSubmit(e){
-    e.persist()
+  handleSubmit(e){
+    // e.persist()
     const { search } = this.state;
-    let token = await getNewToken();
+    let token = this.reqTok();
     debugger
     const request = new Request(`https://api.spotify.com/v1/search?q=${search}&type=Artist`, {
       method: 'GET',
@@ -110,12 +115,12 @@ class Main extends Component {
           />
         {this.showErrors()}
         <div>
-            <Graph nodes={this.state.result} links={this.state.links} />
 
         </div>
       </div>
     );
   }
 }
+// <Graph nodes={this.state.result} links={this.state.links} />
 
 export default Main;

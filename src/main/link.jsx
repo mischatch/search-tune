@@ -10,6 +10,10 @@ class Link extends Component{
       .call(enterLink);
   }
 
+  shouldComponentUpdate(comp){
+    debugger
+  }
+
   componentDidUpdate() {
     this.d3Link.datum(this.props.data)
       .call(updateLink);
