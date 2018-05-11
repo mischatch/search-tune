@@ -50,12 +50,12 @@ body {
 }
 
 .node text {
-  fill: #888888;
+  fill: #004182;
   stroke: none;
-  font-size: .6em;
+  font-size: 16px;
 }
 
 .link {
-  stroke: #cccccc;
-  stroke-opacity: .6;
+  stroke: #004182;
+  stroke-opacity: 1.0;
 }

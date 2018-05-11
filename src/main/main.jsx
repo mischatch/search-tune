@@ -13,8 +13,8 @@ class Main extends Component {
       search: '',
       errors: '',
       result: [
-                {"name": "name1", "id": 1, images: [], genres: [], href: '' },
-                {"name": "name2", "id": 2, images: [], genres: [], href: '' }
+                // {"name": "name1", "id": 1, images: [], genres: [], href: '' },
+                // {"name": "name2", "id": 2, images: [], genres: [], href: '' }
               ],
       width: window.innerWidth,
       height: window.innerHeight,
@@ -35,8 +35,8 @@ class Main extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.makeRequest = this.makeRequest.bind(this);
-    // this.requestToken = this.requestToken.bind(this);
     this.addOne = this.addOne.bind(this);
+    this.addNewNodesAndLinks = this.addNewNodesAndLinks.bind(this);
   }
 
   handleChange(e){
@@ -63,6 +63,10 @@ class Main extends Component {
       }),
     });
     fetch(request)
+      .catch(err => {
+        debugger
+        this.setState({ errors: err.message });
+      })
       .then( res => {
         if (res.status >= 400) {
           const message = `Status: ${res.status}, Error: ${res.statusText}`;
@@ -71,9 +75,18 @@ class Main extends Component {
         return res.json();
       })
       .then(data => {
-        const { name, images, id, genres, href } = data.artists.items[0];
-        const artist = { name, id, images, genres, href };
-        this.setState({ result: this.state.result.concat(artist) });
+        if ( data.artists.items.length === 0 ){
+          this.setState({ errors: 'No artist was found by that name' });
+        } else if (!data.error){
+          const { name, images, id, genres, href } = data.artists.items[0];
+          const artist = { name, id, images, genres, href };
+          this.setState({ result: this.state.result.concat(artist) });
+        } else {
+          this.setState({ errors: data.error.message });
+        }
+      })
+      .then(() => {
+        this.setState({search: ''});
       });
   }
 
@@ -87,6 +100,14 @@ class Main extends Component {
     let last = this.state.result[this.state.result.length - 1].id;
     let obj = {"name": `name${last + 1}`, "id": last + 1, images: [], genres: [], href: '' };
     this.setState({result: this.state.result.concat(obj)});
+  }
+
+  addNewNodesAndLinks(nodes, links){
+    debugger
+    this.setState({
+      result: this.state.result.concat(nodes),
+      links: this.state.links.concat(links)
+    });
   }
 
 
@@ -103,7 +124,11 @@ class Main extends Component {
           />
         {this.showErrors()}
         <div>
-          <Graph nodes={this.state.result} links={this.state.links} />
+          <Graph
+            nodes={this.state.result}
+            links={this.state.links}
+            addNewNodesAndLinks={this.addNewNodesAndLinks}
+            />
         </div>
       </div>
     );
