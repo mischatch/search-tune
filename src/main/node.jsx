@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom';
 import * as d3 from "d3";
 import { enterNode, updateNode } from './d3Util';
 import { getNewToken } from '../secret';
-// import axios from 'axios';
+// import { isEqual, unionWith }  from 'lodash';
+var _ = require('lodash');
+
 
 
 class Node extends Component {
@@ -69,9 +71,10 @@ class Node extends Component {
           links.push(link);
           return artist;
         });
+        var newNodes = this.state.nodes.concat(newResult);
         this.setState({
-          nodes: this.state.nodes.concat(newResult),
-          links: this.state.links.concat(links)
+          nodes: _.unionWith(newNodes, _.isEqual),
+          links: _.unionWith(this.state.links, links, _.isEqual),
         });
       })
       .then(() => {
