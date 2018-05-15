@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import * as d3 from "d3";
-import { enterNode, updateNode } from './d3Util';
+import { enterNode, updateNode, uniqBy } from './d3Util';
 import { getNewToken } from '../secret';
 // import { isEqual, unionWith }  from 'lodash';
 var _ = require('lodash');
@@ -72,12 +72,16 @@ class Node extends Component {
           return artist;
         });
         var newNodes = this.state.nodes.concat(newResult);
+        var newlinks = this.state.links.concat(links);
+        debugger
         this.setState({
-          nodes: _.unionWith(newNodes, _.isEqual),
-          links: _.unionWith(this.state.links, links, _.isEqual),
+          // nodes: _.unionWith(newNodes, _.isEqual),
+          nodes: _.uniqBy(newNodes, 'id'),
+          links: _.uniqWith(newlinks, _.isEqual),
         });
       })
       .then(() => {
+        debugger
         const { nodes, links } = this.state;
         this.props.addNewNodesAndLinks(nodes, links);
       });

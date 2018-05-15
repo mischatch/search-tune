@@ -16,7 +16,7 @@ class Graph extends Component {
 
 
   componentDidMount() {
-    debugger
+    // debugger
     this.nodeUpd(this.props.nodes, this.props.links);
   }
   //
@@ -69,7 +69,7 @@ class Graph extends Component {
   componentWillUpdate(nextProps) {
     // debugger
     if(this.props.nodes.length !== nextProps.nodes.length){
-      debugger
+      // debugger
       this.nodeUpd(nextProps.nodes, nextProps.links);
     }
   }
@@ -82,7 +82,7 @@ class Graph extends Component {
       d3Nodes.enter().append('g').call(enterNode);
       d3Nodes.exit().remove();
       d3Nodes.call(updateNode);
-      debugger
+      // debugger
 
     var d3Links = this.d3Graph.selectAll('.link')
       .data(nextProps.links, (link) => link.key);
