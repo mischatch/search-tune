@@ -66,14 +66,15 @@ class Main extends Component {
         return res.json();
       })
       .then(data => {
-        if ( data.artists.items.length === 0 ){
+        // debugger
+        if(data.error){
+          this.setState({ errors: data.error.message });
+        } else if ( data.artists.items.length === 0 ){
           this.setState({ errors: 'No artist was found by that name' });
         } else if (!data.error){
           const { name, images, id, genres, href } = data.artists.items[0];
           const artist = { name, id, images, genres, href };
           this.setState({ nodes: this.state.nodes.concat(artist) });
-        } else {
-          this.setState({ errors: data.error.message });
         }
       })
       .then(() => {
