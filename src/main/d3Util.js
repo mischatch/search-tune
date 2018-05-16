@@ -7,7 +7,7 @@ export const force = d3.forceSimulation();
 
 export const enterNode = (selection) => {
   selection.select('circle')
-    .style("fill", "light-grey"/*(d) => { return color(d.name); }*/)
+    .style("fill", "#ff6d2c"/*(d) => { return color(d.name); }*/)
     .attr("r", 30);
 
   selection.select('text')
@@ -23,7 +23,7 @@ export const updateNode = (selection) => {
 export const enterLink = (selection) => {
   selection
     .attr("stroke-width", 2)
-    .style("stroke","grey")
+    .style("stroke","#ff6d2c")
     .style("opacity", "0.3");
 };
 

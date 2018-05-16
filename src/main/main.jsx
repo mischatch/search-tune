@@ -56,10 +56,14 @@ class Main extends Component {
     });
     fetch(request)
       .catch(err => {
+        debugger
         this.setState({ errors: err.message });
       })
       .then( res => {
-        if (res.status >= 400) {
+        debugger
+        if(!res){
+          return this.setState({search: ''});
+        } else if (res.status >= 400) {
           const message = `Status: ${res.status}, Error: ${res.statusText}`;
           this.setState({ errors: message });
         }
@@ -89,7 +93,7 @@ class Main extends Component {
   }
 
   addNewNodesAndLinks(nodes, links){
-    debugger
+    // debugger
     this.setState({
       nodes: _.unionWith(this.state.nodes, nodes, _.isEqual),
       links: _.unionWith(this.state.links, links, _.isEqual),

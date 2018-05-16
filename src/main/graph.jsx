@@ -48,7 +48,7 @@ class Graph extends Component {
         d.fx = null;
         d.fy = null;
       }
-      // debugger
+      debugger
       const node = d3.selectAll('g.node')
         .call(d3.drag()
                   .on("start", dragStarted)
@@ -62,6 +62,7 @@ class Graph extends Component {
   }
 
   componentWillUnmount(){
+    debugger
     this.nodeUpd(this.props.nodes, this.props.links);
   }
 
@@ -78,11 +79,11 @@ class Graph extends Component {
     this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
     var d3Nodes = this.d3Graph.selectAll('.node')
-      .data(nextProps.nodes, node => node.id);
+      .data(nextProps.nodes);
       d3Nodes.enter().append('g').call(enterNode);
       d3Nodes.exit().remove();
       d3Nodes.call(updateNode);
-      // debugger
+      debugger
 
     var d3Links = this.d3Graph.selectAll('.link')
       .data(nextProps.links, (link) => link.key);
