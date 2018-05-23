@@ -56,13 +56,11 @@ class Main extends Component {
     });
     fetch(request)
       .catch(err => {
-        debugger
         this.setState({ errors: err.message });
       })
       .then( res => {
-        debugger
         if(!res){
-          return this.setState({search: ''});
+          this.setState({search: ''});
         } else if (res.status >= 400) {
           const message = `Status: ${res.status}, Error: ${res.statusText}`;
           this.setState({ errors: message });

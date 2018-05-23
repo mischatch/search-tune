@@ -16,7 +16,7 @@ class Graph extends Component {
 
 
   componentDidMount() {
-    // debugger
+    debugger
     this.nodeUpd(this.props.nodes, this.props.links);
   }
   //
@@ -60,29 +60,31 @@ class Graph extends Component {
             this.d3Graph.call(updateGraph);
         });
   }
+  //
+  // componentWillUnmount(){
+  //   debugger
+  //   this.nodeUpd(this.props.nodes, this.props.links);
+  // }
 
-  componentWillUnmount(){
-    debugger
-    this.nodeUpd(this.props.nodes, this.props.links);
-  }
 
-
-  componentWillUpdate(nextProps) {
-    // debugger
-    if(this.props.nodes.length !== nextProps.nodes.length){
-      // debugger
-      this.nodeUpd(nextProps.nodes, nextProps.links);
-    }
-  }
+  // componentWillUpdate(nextProps) {
+  //   // debugger
+  //   if(this.props.nodes.length !== nextProps.nodes.length){
+  //     // debugger
+  //     this.nodeUpd(nextProps.nodes, nextProps.links);
+  //   }
+  // }
 
   componentWillReceiveProps(nextProps) {
     this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.graph));
 
-    var d3Nodes = this.d3Graph.selectAll('.node')
-      .data(nextProps.nodes);
+    var d3Nodes = this.d3Graph.selectAll('g.node')
+      .data(Object.values(nextProps.nodes), node => node.id);
+
       d3Nodes.enter().append('g').call(enterNode);
       d3Nodes.exit().remove();
       d3Nodes.call(updateNode);
+
       debugger
 
     var d3Links = this.d3Graph.selectAll('.link')
@@ -92,13 +94,7 @@ class Graph extends Component {
       d3Links.call(updateLink);
 
       this.nodeUpd(nextProps.nodes, nextProps.links);
-    // we should actually clone the nodes and links
-    // since we're not supposed to directly mutate
-    // props passed in from parent, and d3's force function
-    // mutates the nodes and links array directly
-    // we're bypassing that here for sake of brevity in example
-    // force.nodes(nextProps.nodes).links(nextProps.links);
-    // force.start();
+
 
     return false;
 }
