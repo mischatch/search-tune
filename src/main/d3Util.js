@@ -1,7 +1,7 @@
 import * as d3 from "d3";
 
-export const width = 960;
-export const height = 500;
+export const width = window.innerWidth - 50;
+export const height = window.innerHeight - 150;
 export const color = d3.scaleOrdinal(d3.schemeCategory10);
 export const force = d3.forceSimulation();
 
