@@ -68,7 +68,6 @@ class Main extends Component {
         return res.json();
       })
       .then(data => {
-        // debugger
         if(data.error){
           this.setState({ errors: data.error.message });
         } else if ( data.artists.items.length === 0 ){
@@ -91,7 +90,6 @@ class Main extends Component {
   }
 
   addNewNodesAndLinks(nodes, links){
-    // debugger
     this.setState({
       nodes: _.unionWith(this.state.nodes, nodes, _.isEqual),
       links: _.unionWith(this.state.links, links, _.isEqual),

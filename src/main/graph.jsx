@@ -19,13 +19,12 @@ class Graph extends Component {
     debugger
     this.nodeUpd(this.props.nodes, this.props.links);
   }
-  //
-  // componentWillMount(){
-  //   debugger
-  // }
 
   nodeUpd(nodes, links){
-    this.d3Graph = d3.select(ReactDOM.findDOMNode(this));
+    // this.d3Graph = d3.select(ReactDOM.findDOMNode(this));
+    this.d3Graph = d3.select('svg');
+
+
     var force = d3.forceSimulation(nodes)
       .force("charge", d3.forceManyBody().strength(-300).distanceMin(20))
       .force("link",  d3.forceLink(links).id((d) => d.id).distance(30).strength(0.1).iterations(1))
@@ -59,50 +58,50 @@ class Graph extends Component {
         force.on('tick', () => {
             this.d3Graph.call(updateGraph);
         });
+        window.node = node;
   }
-  //
-  // componentWillUnmount(){
-  //   debugger
-  //   this.nodeUpd(this.props.nodes, this.props.links);
-  // }
 
-
-  // componentWillUpdate(nextProps) {
-  //   // debugger
-  //   if(this.props.nodes.length !== nextProps.nodes.length){
-  //     // debugger
-  //     this.nodeUpd(nextProps.nodes, nextProps.links);
-  //   }
-  // }
 
   componentWillReceiveProps(nextProps) {
-    this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.graph));
+    // this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.graph));
+    this.d3Graph = d3.select('svg');
 
-    var d3Nodes = this.d3Graph.selectAll('g.node')
-      .data(Object.values(nextProps.nodes), node => node.id);
-
-      d3Nodes.enter().append('g').call(enterNode);
-      d3Nodes.exit().remove();
-      d3Nodes.call(updateNode);
+    var d3Nodes = d3.select('svg').selectAll("g.node")
+      .data(nextProps.nodes, (node) => node.id)
+      .enter().append('g').call(enterNode)
+      .exit().remove()
+      .call(updateNode);
 
       debugger
 
     var d3Links = this.d3Graph.selectAll('.link')
-      .data(nextProps.links, (link) => link.key);
-      d3Links.enter().insert('line', '.node').call(enterLink);
+      .data(nextProps.links);
+      d3Links.enter().insert('line', 'svg').call(enterLink);
       d3Links.exit().remove();
       d3Links.call(updateLink);
 
-      this.nodeUpd(nextProps.nodes, nextProps.links);
+      // this.nodeUpd(nextProps.nodes, nextProps.links);
+      this.nodeUpd(d3Nodes, d3Links);
 
 
     return false;
 }
 
-  // shouldComponentUpdate(newP) {
-  //   if(this.props.nodes.length !== newP.nodes.length){
-  //     return true;
-  //   }
+  // shouldComponentUpdate(nextProps) {
+  //   this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.graph));
+  //
+  //   var d3Nodes = this.d3Graph.selectAll('.node')
+  //     .data(nextProps.nodes, (node) => node.key);
+  //   d3Nodes.enter().append('g').call(enterNode);
+  //   d3Nodes.exit().remove();
+  //   d3Nodes.call(updateNode);
+  //
+  //   var d3Links = this.d3Graph.selectAll('.link')
+  //     .data(nextProps.links, (link) => link.key);
+  //   d3Links.enter().insert('line', '.node').call(enterLink);
+  //   d3Links.exit().remove();
+  //   d3Links.call(updateLink);
+  //
   //   return false;
   // }
 

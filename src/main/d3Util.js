@@ -3,7 +3,7 @@ import * as d3 from "d3";
 export const width = 960;
 export const height = 500;
 export const color = d3.scaleOrdinal(d3.schemeCategory10);
-// export const force = d3.forceSimulation();
+export const force = d3.forceSimulation();
 
 export const enterNode = (selection) => {
   selection.select('circle')

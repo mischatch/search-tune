@@ -73,7 +73,6 @@ class Node extends Component {
         });
         var newNodes = this.state.nodes.concat(newResult);
         var newlinks = this.state.links.concat(links);
-        debugger
         this.setState({
           // nodes: _.unionWith(newNodes, _.isEqual),
           nodes: _.uniqBy(newNodes, 'id'),
@@ -81,7 +80,6 @@ class Node extends Component {
         });
       })
       .then(() => {
-        debugger
         const { nodes, links } = this.state;
         this.props.addNewNodesAndLinks(nodes, links);
       });
