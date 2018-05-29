@@ -21,6 +21,7 @@ class Graph extends Component {
   // }
 
   nodeUpd(nodes, links){
+    // debugger
     this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.container));
     // this.d3Graph = d3.select('svg');
 
@@ -47,7 +48,7 @@ class Graph extends Component {
         d.fx = null;
         d.fy = null;
       }
-      debugger
+      // debugger
       const node = this.d3Graph.selectAll('g.node')
         .call(d3.drag()
                   .on("start", dragStarted)
@@ -55,27 +56,29 @@ class Graph extends Component {
                   .on("end", dragEnded)
              );
 
-        force.on('tick', () => {
-            this.d3Graph.call(updateGraph);
-        });
-        window.node = node;
+      force.on('tick', () => {
+          this.d3Graph.call(updateGraph);
+      });
+      window.node = node;
+      console.log(node.nodes());
   }
 
 
   componentWillReceiveProps(nextProps) {
-    if(this.props.nodes.length !== nextProps.nodes.length){
-      // this.d3Graph = d3.select('svg');
+    let update = this.props.nodes.length !== nextProps.nodes.length ||
+                 this.props.links.length !== nextProps.links.length;
+    if(update){
       this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.container));
-      debugger
-      var d3Nodes = this.d3Graph.selectAll("g.node")
+      // debugger
+      let d3Nodes = this.d3Graph.selectAll('node')
       .data(nextProps.nodes)
       .enter().append('g').call(enterNode)
       .exit().remove()
       .call(updateNode);
+      console.log(d3Nodes);
+      // debugger
 
-      debugger
-
-      var d3Links = this.d3Graph.selectAll('.link')
+      let d3Links = this.d3Graph.selectAll('.link')
       .data(nextProps.links)
       .enter().insert('line', 'svg').call(enterLink)
       .exit().remove()
@@ -88,6 +91,7 @@ class Graph extends Component {
 
 
   render() {
+    // debugger
     var nodes = _.map(this.props.nodes, (node, i) => {
       return (<Node data={node} key={i} addNewNodesAndLinks={this.props.addNewNodesAndLinks} />);
     });

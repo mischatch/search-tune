@@ -90,11 +90,16 @@ class Main extends Component {
   }
 
   addNewNodesAndLinks(nodes, links){
+    var newNodes = this.state.nodes.concat(nodes);
+    var newlinks = this.state.links.concat(links);
     this.setState({
-      nodes: _.unionWith(this.state.nodes, nodes, _.isEqual),
-      links: _.unionWith(this.state.links, links, _.isEqual),
+      nodes: _.uniqBy(newNodes, 'id'),
+      links: _.uniqWith(newlinks, _.isEqual),
     });
+
   }
+
+
 
   clearGraph(e){
     e.preventDefault();
@@ -104,6 +109,7 @@ class Main extends Component {
 
 
   render(){
+    console.log(this.state);
     return (
       <div>
         <h1>Main</h1>

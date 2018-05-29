@@ -3,9 +3,10 @@ import * as d3 from "d3";
 export const width = window.innerWidth - 50;
 export const height = window.innerHeight - 150;
 export const color = d3.scaleOrdinal(d3.schemeCategory10);
-export const force = d3.forceSimulation();
+// export const force = d3.forceSimulation();
 
 export const enterNode = (selection) => {
+  // debugger
   selection.select('circle')
     .style("fill", "#ff6d2c"/*(d) => { return color(d.name); }*/)
     .attr("r", 30);

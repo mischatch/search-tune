@@ -23,6 +23,7 @@ class Node extends Component {
   }
 
   componentDidMount() {
+    // debugger
     this.d3Node = d3.select(ReactDOM.findDOMNode(this))
       .datum(this.props.data)
       .call(enterNode);
