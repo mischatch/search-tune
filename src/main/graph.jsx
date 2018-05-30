@@ -11,7 +11,7 @@ class Graph extends Component {
   constructor(props){
     super(props);
 
-    this.nodeUpd = this.nodeUpd.bind(this);
+    // this.nodeUpd = this.nodeUpd.bind(this);
   }
 
 
@@ -20,73 +20,135 @@ class Graph extends Component {
   //   this.nodeUpd(this.props.nodes, this.props.links);
   // }
 
-  nodeUpd(nodes, links){
-    // debugger
-    this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.container));
-    // this.d3Graph = d3.select('svg');
+//   nodeUpd(nodes, links){
+//     // debugger
+//     this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.container));
+//     // this.d3Graph = d3.select('svg');
+//
+//     var force = d3.forceSimulation(nodes)
+//       .force("charge", d3.forceManyBody().strength(-300).distanceMin(20))
+//       .force("link",  d3.forceLink(links).id((d) => d.id).distance(30).strength(0.1).iterations(1))
+//       .force("center", d3.forceCenter().x(width / 2).y(height / 2))
+//       .force("collision", d3.forceCollide(75))
+//       .force("collide", d3.forceCollide([5]).iterations([5]).radius([60]));
+//
+//       function dragStarted(d) {
+//         if (!d3.event.active) force.alphaTarget(0.3).restart();
+//         d.fx = d.x;
+//         d.fy = d.y;
+//       }
+//
+//       function dragging(d) {
+//         d.fx = d3.event.x;
+//         d.fy = d3.event.y;
+//       }
+//
+//       function dragEnded(d) {
+//         if (!d3.event.active) force.alphaTarget(0);
+//         d.fx = null;
+//         d.fy = null;
+//       }
+//       // debugger
+//       const node = this.d3Graph.selectAll('g.node')
+//         .call(d3.drag()
+//                   .on("start", dragStarted)
+//                   .on("drag", dragging)
+//                   .on("end", dragEnded)
+//              );
+//
+//       force.on('tick', () => {
+//           this.d3Graph.call(updateGraph);
+//       });
+//       window.node = node;
+//       console.log(node.nodes());
+//   }
+//
+//
+//   componentWillReceiveProps(nextProps) {
+//     let update = this.props.nodes.length !== nextProps.nodes.length ||
+//                  this.props.links.length !== nextProps.links.length;
+//     if(update){
+//       this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.container));
+//       // debugger
+//       let d3Nodes = this.d3Graph.selectAll('node')
+//       .data(nextProps.nodes)
+//       .enter().append('g').call(enterNode)
+//       .exit().remove()
+//       .call(updateNode);
+//       console.log(d3Nodes);
+//       // debugger
+//
+//       let d3Links = this.d3Graph.selectAll('.link')
+//       .data(nextProps.links)
+//       .enter().insert('line', 'svg').call(enterLink)
+//       .exit().remove()
+//       .call(updateLink);
+//
+//       this.nodeUpd(nextProps.nodes, nextProps.links);
+//     }
+//
+// }
 
-    var force = d3.forceSimulation(nodes)
-      .force("charge", d3.forceManyBody().strength(-300).distanceMin(20))
-      .force("link",  d3.forceLink(links).id((d) => d.id).distance(30).strength(0.1).iterations(1))
-      .force("center", d3.forceCenter().x(width / 2).y(height / 2))
-      .force("collision", d3.forceCollide(75))
-      .force("collide", d3.forceCollide([5]).iterations([5]).radius([60]));
+componentWillReceiveProps(nextProps){
+  this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.container));
 
-      function dragStarted(d) {
-        if (!d3.event.active) force.alphaTarget(0.3).restart();
-        d.fx = d.x;
-        d.fy = d.y;
-      }
+  let simulation = d3.forceSimulation()
+    .force("charge", d3.forceManyBody().strength(-300).distanceMin(20))
+    .force("link",  d3.forceLink().id((d) => d.id).distance(30).strength(0.1).iterations(1))
+    .force("center", d3.forceCenter().x(width / 2).y(height / 2))
+    .force("collision", d3.forceCollide(75))
+    .force("collide", d3.forceCollide([5]).iterations([5]).radius([60]));
 
-      function dragging(d) {
-        d.fx = d3.event.x;
-        d.fy = d3.event.y;
-      }
+  var link = this.d3Graph.selectAll('.link')
+    .data(nextProps.links)
+    .enter()
+    .append("g")
+    .attr("class", "link")
+    .call(enterLink)
+    .exit().remove();
 
-      function dragEnded(d) {
-        if (!d3.event.active) force.alphaTarget(0);
-        d.fx = null;
-        d.fy = null;
-      }
-      // debugger
-      const node = this.d3Graph.selectAll('g.node')
-        .call(d3.drag()
-                  .on("start", dragStarted)
-                  .on("drag", dragging)
-                  .on("end", dragEnded)
-             );
+  var node = this.d3Graph.selectAll('.node')
+    .data(nextProps.nodes)
+    .enter()
+    .append("g")
+    .attr("class", "node")
+    .call(enterNode)
+    .call(updateNode)
+    .exit().remove();
 
-      force.on('tick', () => {
-          this.d3Graph.call(updateGraph);
-      });
-      window.node = node;
-      console.log(node.nodes());
+  simulation.nodes(nextProps.nodes)
+      .on("tick", () => {
+            this.d3Graph.call(updateGraph);
+        });
+
+  this.d3Graph.selectAll('g.node')
+    .call(d3.drag()
+      .on("start", dragstarted)
+      .on("drag", dragged)
+      .on("end", dragended)
+    )
+    .exit().remove();
+
+  simulation.force("link")
+      .links(nextProps.links);
+
+
+  function dragstarted(d) {
+      if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
   }
 
+  function dragged(d) {
+      d.fx = d3.event.x;
+      d.fy = d3.event.y;
+  }
 
-  componentWillReceiveProps(nextProps) {
-    let update = this.props.nodes.length !== nextProps.nodes.length ||
-                 this.props.links.length !== nextProps.links.length;
-    if(update){
-      this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.container));
-      // debugger
-      let d3Nodes = this.d3Graph.selectAll('node')
-      .data(nextProps.nodes)
-      .enter().append('g').call(enterNode)
-      .exit().remove()
-      .call(updateNode);
-      console.log(d3Nodes);
-      // debugger
-
-      let d3Links = this.d3Graph.selectAll('.link')
-      .data(nextProps.links)
-      .enter().insert('line', 'svg').call(enterLink)
-      .exit().remove()
-      .call(updateLink);
-
-      this.nodeUpd(nextProps.nodes, nextProps.links);
-    }
-
+  function dragended(d) {
+      if (!d3.event.active) simulation.alphaTarget(0);
+      d.fx = null;
+      d.fy = null;
+  }
 }
 
 
