@@ -109,7 +109,7 @@ class Main extends Component {
 
 
   render(){
-    console.log(this.state);
+    // console.log(this.state);
     return (
       <div>
         <h1>Main</h1>
