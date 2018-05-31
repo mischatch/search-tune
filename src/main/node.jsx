@@ -30,6 +30,7 @@ class Node extends Component {
   }
 
   componentDidUpdate() {
+    // debugger
     this.d3Node.datum(this.props.data)
       .call(updateNode);
   }

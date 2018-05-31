@@ -93,10 +93,10 @@ componentWillReceiveProps(nextProps){
   this.d3Graph = d3.select(ReactDOM.findDOMNode(this.refs.container));
 
   let simulation = d3.forceSimulation()
-    .force("charge", d3.forceManyBody().strength(-300).distanceMin(20))
-    .force("link",  d3.forceLink().id((d) => d.id).distance(30).strength(0.1).iterations(1))
+    .force("charge", d3.forceManyBody().strength(-300).distanceMin(10))
+    .force("link",  d3.forceLink().id((d) => d.id).distance(15).strength(0.5).iterations(0.5))
     .force("center", d3.forceCenter().x(width / 2).y(height / 2))
-    .force("collision", d3.forceCollide(75))
+    .force("collision", d3.forceCollide(25))
     .force("collide", d3.forceCollide([5]).iterations([5]).radius([60]));
 
   var link = this.d3Graph.selectAll('.link')
@@ -104,8 +104,8 @@ componentWillReceiveProps(nextProps){
     .enter()
     .append("g")
     .attr("class", "link")
-    .call(enterLink)
-    .exit().remove();
+    .call(enterLink);
+    // .exit().remove();
 
   var node = this.d3Graph.selectAll('.node')
     .data(nextProps.nodes)
@@ -113,14 +113,14 @@ componentWillReceiveProps(nextProps){
     .append("g")
     .attr("class", "node")
     .call(enterNode)
-    .call(updateNode)
-    .exit().remove();
+    .call(updateNode);
+    // .exit().remove();
 
   simulation.nodes(nextProps.nodes)
       .on("tick", () => {
             this.d3Graph.call(updateGraph);
         });
-
+debugger
   this.d3Graph.selectAll('g.node')
     .call(d3.drag()
       .on("start", dragstarted)
@@ -149,6 +149,14 @@ componentWillReceiveProps(nextProps){
       d.fx = null;
       d.fy = null;
   }
+  // this.d3Graph.selectAll('g.node')
+  //   .call(d3.drag()
+  //     .on("start", dragstarted)
+  //     .on("drag", dragged)
+  //     .on("end", dragended)
+  //   );
+    // .exit().remove();
+
 }
 
 
