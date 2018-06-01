@@ -106,6 +106,57 @@ class Graph extends Component {
         .force("collision", d3.forceCollide(25))
         .force("collide", d3.forceCollide([5]).iterations([5]).radius([60]));
 
+      const dragstarted = (d) => {
+        debugger
+        if (!d3.event.active) simulation.alphaTarget(0.3).restart();
+        d.fx = d.x;
+        d.fy = d.y;
+      };
+
+      const dragged = (d) => {
+        d.fx = d3.event.x;
+        d.fy = d3.event.y;
+      };
+
+      const dragended = (d) => {
+        if (!d3.event.active) simulation.alphaTarget(0);
+        d.fx = null;
+        d.fy = null;
+      };
+
+      var objs = this.d3Graph.selectAll('g');
+
+      const drag = d3.drag()
+                  .on("start", dragstarted)
+                  .on("drag", dragged)
+                  .on("end", dragended);
+
+      var xAxisScale = d3.scaleLinear()
+                      // .domain([-50,-50])
+                      .range([0,width / 2]);
+
+      var yAxisScale = d3.scaleLinear()
+                      // .domain([-50,-50])
+                      .range([height / 2,0]);
+
+      const zoomFunction = () => {
+        // create new scale ojects based on event
+        var new_xScale = d3.event.transform.rescaleX(xAxisScale);
+        var new_yScale = d3.event.transform.rescaleY(yAxisScale);
+        console.log(d3.event.transform);
+
+        // // update axes
+        // gX.call(xAxis.scale(new_xScale));
+        // gY.call(yAxis.scale(new_yScale));
+
+        // update circle
+        objs.attr("transform", d3.event.transform);
+      };
+      var zoom = d3.zoom()
+                .on("zoom", zoomFunction);
+
+      this.d3Graph.call(zoom);
+
       var link = this.d3Graph.selectAll('.link')
         .data(nextProps.links)
         .enter()
@@ -114,32 +165,32 @@ class Graph extends Component {
         .call(enterLink);
         // .exit().remove();
 
-        debugger
       var node = this.d3Graph.selectAll('.node')
         .data(nextProps.nodes);
-        // .exit().remove();
+
 
       node = node
         .enter()
         .append("g")
         .attr("class", "node")
-        .call(enterNode)
+        .call(enterNode);
+        // .exit().remove()
         // .call(updateNode)
         // .call(d3.drag()
         //   .on("start", dragstarted)
         //   .on("drag", dragged)
         //   .on("end", dragended)
-        // )
-        .merge(node);
+        // );
 
+        debugger
 
         this.d3Graph.selectAll(".node")
-        // node
-         .call(d3.drag()
-           .on("start", dragstarted)
-           .on("drag", dragged)
-           .on("end", dragended)
-         );
+        // // node
+         .call(drag);
+           // .on("start", dragstarted)
+           // .on("drag", dragged)
+           // .on("end", dragended)
+         // );
 
 
       simulation.nodes(nextProps.nodes)
@@ -148,38 +199,7 @@ class Graph extends Component {
       simulation.force("link")
         .links(nextProps.links);
 
-
-        function dragstarted(d) {
-          if (!d3.event.active) simulation.alphaTarget(0.3).restart();
-          d.fx = d.x;
-          d.fy = d.y;
-        }
-
-        function dragged(d) {
-          d.fx = d3.event.x;
-          d.fy = d3.event.y;
-        }
-
-        function dragended(d) {
-          if (!d3.event.active) simulation.alphaTarget(0);
-          d.fx = null;
-          d.fy = null;
-        }
-
-        //create zoom handler
-var zoom_handler = d3.zoom()
-    .on("zoom", zoom_actions);
-
-
-//specify what to do when zoom event listener is triggered
-function zoom_actions(){
-  node.attr("transform", d3.event.transform);
-}
-
-//add zoom behaviour to the svg element backing our graph.
-//same thing as svg.call(zoom_handler);
-zoom_handler(this.d3Graph);
-
+      simulation.alpha(0.3).restart();
 
     }
   }
