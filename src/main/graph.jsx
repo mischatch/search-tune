@@ -131,34 +131,34 @@ class Graph extends Component {
                   .on("drag", dragged)
                   .on("end", dragended);
 
-      var xAxisScale = d3.scaleLinear()
-                      // .domain([-50,-50])
-                      .range([0,width / 2]);
+      // var xAxisScale = d3.scaleLinear()
+      //                 // .domain([-50,-50])
+      //                 .range([0,width / 2]);
+      //
+      // var yAxisScale = d3.scaleLinear()
+      //                 // .domain([-50,-50])
+      //                 .range([height / 2,0]);
 
-      var yAxisScale = d3.scaleLinear()
-                      // .domain([-50,-50])
-                      .range([height / 2,0]);
-
-      const zoomFunction = () => {
-        // create new scale ojects based on event
-        var new_xScale = d3.event.transform.rescaleX(xAxisScale);
-        var new_yScale = d3.event.transform.rescaleY(yAxisScale);
-        console.log(d3.event.transform);
-
-        // // update axes
-        // gX.call(xAxis.scale(new_xScale));
-        // gY.call(yAxis.scale(new_yScale));
-
-        // update circle
-        objs.attr("transform", d3.event.transform);
-      };
-      var zoom = d3.zoom()
-                .on("zoom", zoomFunction);
-
-      this.d3Graph.call(zoom);
+      // const zoomFunction = () => {
+      //   // create new scale ojects based on event
+      //   var new_xScale = d3.event.transform.rescaleX(xAxisScale);
+      //   var new_yScale = d3.event.transform.rescaleY(yAxisScale);
+      //   console.log(d3.event.transform);
+      //
+      //   // // update axes
+      //   // gX.call(xAxis.scale(new_xScale));
+      //   // gY.call(yAxis.scale(new_yScale));
+      //
+      //   // update circle
+      //   objs.attr("transform", d3.event.transform);
+      // };
+      // var zoom = d3.zoom()
+      //           .on("zoom", zoomFunction);
+      //
+      // this.d3Graph.call(zoom);
 
       var link = this.d3Graph.selectAll('.link')
-        .data(nextProps.links)
+        .data(nextProps.links, d => d.id)
         .enter()
         .append("g")
         .attr("class", "link")
@@ -166,32 +166,24 @@ class Graph extends Component {
         // .exit().remove();
 
       var node = this.d3Graph.selectAll('.node')
-        .data(nextProps.nodes);
+        .data(nextProps.nodes, d => d.id);
 
 
-      node = node
-        .enter()
+      var nodeEnter = node.enter()
         .append("g")
         .attr("class", "node")
         .call(enterNode);
-        // .exit().remove()
         // .call(updateNode)
-        // .call(d3.drag()
-        //   .on("start", dragstarted)
-        //   .on("drag", dragged)
-        //   .on("end", dragended)
-        // );
 
-        debugger
+        node = nodeEnter.merge(node);
+        node.exit().remove();
 
-        this.d3Graph.selectAll(".node")
-        // // node
-         .call(drag);
-           // .on("start", dragstarted)
-           // .on("drag", dragged)
-           // .on("end", dragended)
-         // );
+        node.call(drag);
 
+      // debugger
+
+      // this.d3Graph.selectAll(".node")
+      //   .call(drag);
 
       simulation.nodes(nextProps.nodes)
         .on("tick", () => this.d3Graph.call(updateGraph));
