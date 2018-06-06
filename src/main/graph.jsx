@@ -89,6 +89,11 @@ class Graph extends Component {
 //     }
 //
 // }
+
+  componentWillUnmount(){
+    debugger
+  }
+
   componentWillReceiveProps(nextProps) {
     console.log('componentWillReceiveProps GEN');
     let update = this.props.nodes.length !== nextProps.nodes.length ||
@@ -107,7 +112,6 @@ class Graph extends Component {
         .force("collide", d3.forceCollide([5]).iterations([5]).radius([60]));
 
       const dragstarted = (d) => {
-        debugger
         if (!d3.event.active) simulation.alphaTarget(0.3).restart();
         d.fx = d.x;
         d.fy = d.y;
@@ -158,7 +162,7 @@ class Graph extends Component {
       // this.d3Graph.call(zoom);
 
       var link = this.d3Graph.selectAll('.link')
-        .data(nextProps.links, d => d.id)
+        .data(nextProps.links)
         .enter()
         .append("g")
         .attr("class", "link")
@@ -166,7 +170,7 @@ class Graph extends Component {
         // .exit().remove();
 
       var node = this.d3Graph.selectAll('.node')
-        .data(nextProps.nodes, d => d.id);
+        .data(nextProps.nodes);
 
 
       var nodeEnter = node.enter()
@@ -180,7 +184,7 @@ class Graph extends Component {
 
         node.call(drag);
 
-      // debugger
+      debugger
 
       // this.d3Graph.selectAll(".node")
       //   .call(drag);
