@@ -48,6 +48,7 @@ class Main extends Component {
     const { search } = this.state;
     const request = new Request(`https://api.spotify.com/v1/search?q=${search}&type=Artist`, {
       method: 'GET',
+      // mode: 'cors',
       headers: new Headers({
         'Accept': 'application/json',
         'Content-Type': 'application/json',
